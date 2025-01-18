@@ -1,3 +1,4 @@
+import { cn } from '@repo/ui';
 import React, { useEffect, useRef, useState } from 'react';
 import { TarotCard, tarotData } from '../../assets/data';
 import CardTarot from './CardTarot';
@@ -7,10 +8,14 @@ import { requestAI } from './ultis';
 const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const boxRef = useRef<HTMLDivElement[]>([]);
+  const [listData] = useState(() =>
+    tarotData.sort(() => (Math.random() > 0.5 ? 1 : -1))
+  );
   const [openIndex, setOpenIndex] = useState<number>();
+  const [loadingIndex, setLoadingIndex] = useState<number>();
 
   const handleShuffle = () => {
-    const listLength = tarotData.length;
+    const listLength = listData.length;
     if (containerRef.current && boxRef?.current) {
       const { x, y, height, width } =
         containerRef.current?.getBoundingClientRect();
@@ -57,18 +62,13 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
   };
 
   const handleSelect = (data: TarotCard, index: number) => () => {
+    if (typeof loadingIndex === 'number' || typeof openIndex === 'number') {
+      return;
+    }
     const eleRef = boxRef.current[index] as HTMLDivElement;
     const eleContainerRef = containerRef.current;
 
     if (eleRef && eleContainerRef) {
-      // const { name } = data;
-      requestAI(data).then((resData) => {
-        onComplete({
-          data,
-          contentData: resData?.[0],
-        });
-      });
-
       const { x, y, height, width } = eleContainerRef.getBoundingClientRect();
 
       const targetX = x + width / 2;
@@ -102,8 +102,32 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
         }
       );
 
-      animateItem.onfinish = () => {
+      requestAI(data).then((resData) => {
         setOpenIndex(index);
+        const animateFinished = eleRef.animate(
+          {
+            transform: [
+              `translate(${targetX - distanceX}px,${targetY - distanceY}px) scale(4)`,
+              `translate(${targetX - distanceX - targetX / 2}px,${targetY - distanceY}px) scale(4)`,
+            ],
+            easing: ['cubic-bezier(.17,.67,.83,.67)'],
+          },
+          {
+            delay: 1500,
+            duration: 500,
+            fill: 'forwards',
+          }
+        );
+        animateFinished.onfinish = () => {
+          onComplete({
+            data,
+            contentData: resData?.[0],
+          });
+        };
+      });
+
+      animateItem.onfinish = () => {
+        setLoadingIndex(index);
       };
     }
   };
@@ -113,11 +137,12 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
   }, []);
 
   return (
-    <section>
+    <section className="overflow-y-scroll max-h-screen">
       {/* <button onClick={handleShuffle}>Trigger</button> */}
       <div className="container" ref={containerRef}>
-        {tarotData.map((tarot, index) => (
+        {listData.map((tarot, index) => (
           <div
+            className={cn('cursor-pointer')}
             onClick={handleSelect(tarot, index)}
             key={index}
             ref={(el) => {
@@ -130,6 +155,7 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
               key={index}
               data={tarot}
               isOpened={openIndex === index}
+              isLoading={loadingIndex === index && openIndex !== index}
             />
           </div>
         ))}

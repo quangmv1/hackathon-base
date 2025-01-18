@@ -2,7 +2,10 @@ import React, { useEffect } from 'react';
 import { Input } from '@repo/ui';
 import './style.css';
 import { ConnectButton } from '@mysten/dapp-kit';
-const UserForm = () => {
+
+const UserForm = ({onNext}:{
+  onNext: ()=>void
+}) => {
 
   const [name, setName] = React.useState('');
   const [birthDate, setBirthDate] = React.useState('');
@@ -20,7 +23,7 @@ const UserForm = () => {
         backgroundImage: 'url(/images/star_bg.jpg)',
       }}
     >
-      <div className='jack-position'>
+      <div onClick={onNext} className='jack-position'>
         <img
           id='jack'
           src="/images/jack_banner.png"
@@ -54,6 +57,10 @@ const UserForm = () => {
       </div>
 
       <ConnectButton className={'p-2'} />
+      {/* <Button onClick={()=>{
+        console.log("onNext");
+        onNext()
+      }} >Connect 2</Button> */}
     </div>
   );
 }
