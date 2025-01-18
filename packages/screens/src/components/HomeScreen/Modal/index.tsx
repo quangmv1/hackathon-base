@@ -136,7 +136,7 @@ export const Modal: FC = () => {
         onClick={closeOutside}
         className={'fixed left-0 top-0 right-0 z-50 h-screen w-screen bg-backgroundModal'}
       >
-        <div onClick={(e) => e.stopPropagation()}>{content}</div>
+        <div onClick={(e) => e.stopPropagation()} className={contentClassName}>{content}</div>
       </Dialog>
     </Transition>
   )
