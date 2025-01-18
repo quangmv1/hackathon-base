@@ -17,12 +17,8 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "prettier"
-    ],
-    "*.{json,html}": [
-      "prettier --write --ignore-unknown"
-    ]
+    "*.{js,jsx,ts,tsx}": [],
+    "*.{json,html}": []
   },
   "devDependencies": {
     "@commitlint/cli": "^19.6.0",

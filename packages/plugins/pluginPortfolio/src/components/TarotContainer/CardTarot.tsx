@@ -1,7 +1,8 @@
-import { cn } from '@repo/ui/src/lib/utils';
+import { cn } from '@repo/ui';
 import React from 'react';
 import { TarotCard } from '../../assets/data';
 import './style.css';
+
 type Props = {
   isOpened?: boolean;
   data: TarotCard;
@@ -10,18 +11,25 @@ type Props = {
 function CardTarot({ isOpened, data }: Props) {
   return (
     <div
-      className={cn('flip-card', {
+      className={cn('flip-card aspect-[350/600] cursor-pointer ', {
         'flip-card-opened': isOpened,
       })}
     >
       <div className="flip-card-inner">
         <div className="flip-card-front">
-          <img src="img_avatar.png" alt="Avatar" />
+          {/* <img src={data.img} alt="Avatar" /> */}
+          <img
+            src="/images/back-tarot.png"
+            alt="bg-header"
+            className="hidden md:block h-full absolute -z-[1] w-full object-contain"
+          />
         </div>
         <div className="flip-card-back">
-          <h1>John Doe</h1>
-          <p>Architect & Engineer</p>
-          <p>We love that guy</p>
+          <img
+            src={`/images/cards/${data.img}`}
+            alt="bg-header"
+            className="hidden md:block h-full absolute -z-[1] w-full object-cover"
+          />
         </div>
       </div>
     </div>

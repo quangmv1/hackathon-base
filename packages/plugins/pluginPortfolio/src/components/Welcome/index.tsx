@@ -5,7 +5,6 @@ import Typewriter from 'typewriter-effect';
 import UserForm from '../UserForm';
 
 
-
 const Welcome = () => {
   const openModalSection = () => {
     window?.openModal({
@@ -62,6 +61,6 @@ const Welcome = () => {
       </div>
     </div>
   );
-}
- 
+};
+
 export default Welcome;
