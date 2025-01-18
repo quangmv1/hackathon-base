@@ -1,15 +1,15 @@
 import React from 'react';
-import { tarotData } from '../../assets/data';
-import CardTarot from './CardTarot';
+// import { tarotData } from '../../assets/data';
+// import CardTarot from './CardTarot';
 
 type Props = {};
 
 function TarotContainer({}: Props) {
   return (
     <div>
-      {tarotData.map((tarot) => (
-        <CardTarot key={tarot.} data={tarot} />
-      ))}
+      {/* {tarotData.map((tarot, index) => (
+        <CardTarot key={index} data={tarot} />
+      ))} */}
     </div>
   );
 }
