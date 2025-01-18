@@ -1,6 +1,6 @@
 import { useGlobalHook, useRegisterPlugin } from '@repo/plugin-sdk';
 import React from 'react';
-import { AppProvider } from './providers/app';
+
 import TarotContainer from './components/TarotContainer';
 
 export const PluginPortfolio = () => {
@@ -39,12 +39,9 @@ export const PluginPortfolio = () => {
     bootstrap,
   });
   return (
-    <AppProvider>
-      <div className="border rounded-lg p-4 border-dividerColorDefault">
-        {/* <ConnectWallet /> */}
+    <div className="border rounded-lg p-4 border-dividerColorDefault">
+      {/* <ConnectWallet /> */}
       <TarotContainer />
-      </div>
-    </AppProvider>
-
+    </div>
   );
 };

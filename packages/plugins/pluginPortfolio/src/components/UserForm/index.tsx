@@ -11,10 +11,10 @@ import { useFetchAccountNftTokens } from '../ConnectWallet';
 
 interface Props {
   onNext: () => void;
-  toggleViewCard?: () => void
+  toggleViewCard?: () => void;
 }
 
-const InfoFillBoard = ({ onNext }:Props) => {
+const InfoFillBoard = ({ onNext }: Props) => {
   const [name, setName] = React.useState('');
   const [open, setOpen] = useState(false);
   const [birthDate, setBirthDate] = React.useState('');
@@ -52,10 +52,7 @@ const InfoFillBoard = ({ onNext }:Props) => {
       <div className="flex flex-col items-center">
         <ConnectModal
           trigger={
-            <Button
-              className="w-1/4 border-spacing-4 "
-              disabled={!name}
-            >
+            <Button className="w-1/4 border-spacing-4 " disabled={!name}>
               {' '}
               {'Connect'}
             </Button>
@@ -68,44 +65,64 @@ const InfoFillBoard = ({ onNext }:Props) => {
   );
 };
 
-export const ViewTarotCard = ({ toggleViewCard }: {toggleViewCard: () => void}) => {
+export const ViewTarotCard = ({
+  toggleViewCard,
+}: {
+  toggleViewCard: () => void;
+}) => {
   const { data: nftList } = useFetchAccountNftTokens();
 
-  return <div>
-    <Button onClick={toggleViewCard} >Back</Button>
-    <table className="w-full">
-    {nftList?.map((nft) => nft?.content?.fields?.url && (
-      <tr key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}>
-        <th>
-          <figure>
-            <img
-              src={nft.content.fields.url}
-              alt="Image Of Parcels"
-              width="150"
-              height="150"
-            />
-            <figcaption> {nft?.content?.fields?.name}  </figcaption>
-          </figure>
-        </th>
-        <th className='text-left pl-5' > {nft?.content?.fields?.description} </th>
-      </tr>
-    ))}
-  </table>
-  </div>
-}
+  return (
+    <div>
+      <Button onClick={toggleViewCard}>Back</Button>
+      <table className="w-full">
+        {nftList?.map(
+          (nft) =>
+            nft?.content?.fields?.url && (
+              <tr key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}>
+                <th>
+                  <figure>
+                    <img
+                      src={nft.content.fields.url}
+                      alt="Image Of Parcels"
+                      width="150"
+                      height="150"
+                    />
+                    <figcaption> {nft?.content?.fields?.name} </figcaption>
+                  </figure>
+                </th>
+                <th className="text-left pl-5">
+                  {' '}
+                  {nft?.content?.fields?.description}{' '}
+                </th>
+              </tr>
+            )
+        )}
+      </table>
+    </div>
+  );
+};
 
 const DailyTarotCard = (props: Props) => {
-
   return (
     <>
       <ConnectButton className="absolute top-0 " />
-      <div className="w-full all-center absolute bottom-0 gap-5 p-5" >
-      <Button className='min-w-[200px] rounded-2xl ' onClick={props.onNext} > Draw </Button>
-      <Button className='min-w-[200px] rounded-2xl' onClick={ () => {
-        if (props.toggleViewCard) {
-          props.toggleViewCard();
-        }
-      } } > Your Card </Button>
+      <div className="w-full all-center absolute bottom-0 gap-5 p-5">
+        <Button className="min-w-[200px] rounded-2xl " onClick={props.onNext}>
+          {' '}
+          Draw{' '}
+        </Button>
+        <Button
+          className="min-w-[200px] rounded-2xl"
+          onClick={() => {
+            if (props.toggleViewCard) {
+              props.toggleViewCard();
+            }
+          }}
+        >
+          {' '}
+          Your Card{' '}
+        </Button>
       </div>
     </>
   );
@@ -126,24 +143,28 @@ const UserForm = ({ onNext, toggleViewCard }: Props) => {
       className="bg-black p-8 w-[1024px] mt-[20vh] mx-auto rounded-[24px] relative min-h-[600px]"
       style={{
         backgroundImage: 'url(/images/star_bg.jpg)',
+        // backgroundImage:
+        //   'url(https://media.istockphoto.com/id/1357138190/photo/flicker-abstract-particles-golden-dust-background.webp?b=1&s=612x612&w=0&k=20&c=D1lJSgCBLg-80L9Fv-E7_eE87wtKoL-0iU2UjIiy74o=)',
+        backgroundPosition: 'cover',
+        backgroundRepeat: 'repeat-x',
       }}
+
     >
-      <div onClick={onNext} className="jack-position">
-        <img
-          id="jack"
-          src="/images/jack_banner.png"
-          alt="jack"
-          className="w-96 h-96 mx-auto shrink-img rounded-full"
-        />
+      <div className="jack-position">
+        <div className="animate-wiggle">
+          <img
+            id="jack"
+            src="/images/jack_banner.png"
+            alt="jack"
+            className="w-96 h-96 mx-auto shrink-img rounded-full"
+          />
+        </div>
       </div>
-      {!currentAccount && (
-        <InfoFillBoard
-          onNext={onNext}
+      {!currentAccount && <InfoFillBoard onNext={onNext} />}
 
-        />
+      {currentAccount && (
+        <DailyTarotCard onNext={onNext} toggleViewCard={toggleViewCard} />
       )}
-
-      {currentAccount && <DailyTarotCard onNext={onNext} toggleViewCard={toggleViewCard} />}
     </div>
   );
 };

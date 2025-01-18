@@ -6,9 +6,9 @@ import {
   useSuiClient,
 } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
-import React from 'react';
+import React, { useState } from 'react';
+import { toast } from 'sonner';
 
-import { Button } from '@repo/ui';
 import { useQuery } from '@tanstack/react-query';
 
 export interface SuiAccountObject {
@@ -185,6 +185,8 @@ export const useFetchAccountNftTokens = () => {
 export const useMintTarotNft = () => {
   const client = useSuiClient();
   const { mutateAsync: signTransaction } = useSignTransaction();
+  const [isLoading, setIsLoading] = useState(false);
+  const [mintData, setMintData] = useState<any>();
 
   const handleMint = React.useCallback(
     async (props?: {
@@ -193,53 +195,81 @@ export const useMintTarotNft = () => {
       url: string;
       metadata: string;
     }) => {
-      const tx = new Transaction();
-      let name = props?.name ?? 'Default Name',
-        description = props?.description ?? 'Default Description',
-        url = props?.url ?? 'https://example.com',
-        metadata =
-          typeof props?.metadata === 'string'
-            ? props?.metadata
-            : JSON.stringify(props?.metadata ?? {});
-      const gasBudget = 20_000_000;
+      try {
+        setIsLoading(true);
+        const tx = new Transaction();
+        let name = props?.name ?? 'Default Name',
+          description = props?.description ?? 'Default Description',
+          url = props?.url ?? 'https://example.com',
+          metadata =
+            typeof props?.metadata === 'string'
+              ? props?.metadata
+              : JSON.stringify(props?.metadata ?? {});
+        const gasBudget = 20_000_000;
 
-      tx.moveCall({
-        function: 'mint_to_sender',
-        module: 'testnet_nft',
-        arguments: [
-          tx.pure.string(name),
-          tx.pure.string(description),
-          tx.pure.string(url),
-          tx.pure.string(metadata),
-        ],
-        package: TAROT_NFT_PACKAGE,
-      });
+        tx.moveCall({
+          function: 'mint_to_sender',
+          module: 'testnet_nft',
+          arguments: [
+            tx.pure.string(name),
+            tx.pure.string(description),
+            tx.pure.string(url),
+            tx.pure.string(metadata),
+          ],
+          package: TAROT_NFT_PACKAGE,
+        });
 
-      tx.setGasBudget(gasBudget);
+        tx.setGasBudget(gasBudget);
 
-      // transfer the split coin to a specific address
-      const { bytes, signature } = await signTransaction({
-        transaction: tx,
-        chain: 'sui:devnet',
-      });
+        // transfer the split coin to a specific address
+        const { bytes, signature } = await signTransaction({
+          transaction: tx,
+          chain: 'sui:devnet',
+        });
 
-      const executeResult = await client.executeTransactionBlock({
-        transactionBlock: bytes,
-        signature,
-        options: {
-          showRawEffects: true,
-        },
-      });
+        const executeRequest = client.executeTransactionBlock({
+          transactionBlock: bytes,
+          signature,
+          options: {
+            showRawEffects: true,
+          },
+        });
 
-      console.log(executeResult);
-      setTimeout(() => {
-        window.open(`https://suiscan.xyz/devnet/tx/${executeResult.digest}`);
-      }, 1_500);
+        toast.promise(executeRequest, {
+          loading: 'Getting your NFT...',
+          success: (executeResult: any) => {
+            const txLink = `https://suiscan.xyz/devnet/tx/${executeResult.digest}`;
+            setMintData(executeResult);
+            return (
+              <span>
+                Get NFT completed!{' '}
+                <a
+                  href={txLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-yellow-400"
+                >
+                  View Transaction
+                </a>
+              </span>
+            );
+          },
+          error: 'Failed to get NFT',
+        });
+
+        // console.log(executeResult);
+        // setTimeout(() => {
+        //   window.open(`https://suiscan.xyz/devnet/tx/${executeResult.digest}`);
+        // }, 1_500);
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
     },
     []
   );
 
-  return { handleMint };
+  return { handleMint, isLoading, mintData };
 };
 
 export const ConnectWallet: React.FC = () => {
