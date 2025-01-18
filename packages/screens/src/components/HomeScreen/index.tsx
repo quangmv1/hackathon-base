@@ -3,6 +3,7 @@ import { Separator } from '@repo/ui'
 import Link from 'next/link'
 import Hero from './Hero'
 import { PluginArea } from '../plugin-area'
+import { Modal } from './Modal'
 const HomeScreen = () => {
   return (
     <section className="flex flex-col gap-y-8 ">
@@ -15,6 +16,7 @@ const HomeScreen = () => {
         </Link>
       </div>
       <PluginArea />
+      <Modal/>
     </section>
   )
 }

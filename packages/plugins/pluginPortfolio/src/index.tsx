@@ -1,8 +1,7 @@
 import { useGlobalHook, useRegisterPlugin } from '@repo/plugin-sdk';
-import { TUserInfo } from '@repo/store/types';
 import React from 'react';
 import { AppProvider } from './providers/app';
-import { ConnectWallet } from './components/ConnectWallet';
+import TarotContainer from './components/TarotContainer';
 
 export const PluginPortfolio = () => {
   const { add_hook } = useGlobalHook();
@@ -12,7 +11,8 @@ export const PluginPortfolio = () => {
     add_hook(
       'subtitle',
       () => {
-        return <div>Plugin contents 123</div>;
+        // return <div>Plugin contents 123</div>;
+        return <div>AI Pro Tarrot</div>;
       },
       'action',
       'PluginPortfolio'
@@ -21,11 +21,12 @@ export const PluginPortfolio = () => {
       'dataPortfolio',
       (...args: any[]) => {
         console.log('Args in dataPortfolio:', args);
-        const [mockUserInfo, inputAddress] = args;
-        const result = mockUserInfo.filter(
-          (user: TUserInfo) => user.address === inputAddress
-        );
-        return result;
+        // const [mockUserInfo, inputAddress] = args;
+        // const result = mockUserInfo.filter(
+        //   (user: TUserInfo) => user.address === inputAddress
+        // );
+        // return result;
+        return null;
       },
       'filter',
       'PluginPortfolio'
@@ -40,9 +41,10 @@ export const PluginPortfolio = () => {
   return (
     <AppProvider>
       <div className="border rounded-lg p-4 border-dividerColorDefault">
-        Sui Create NFT
-        <ConnectWallet />
+        {/* <ConnectWallet /> */}
+      <TarotContainer />
       </div>
     </AppProvider>
+
   );
 };
