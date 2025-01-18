@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { Button } from '@repo/ui';
+import React, { useEffect, useState } from 'react';
 import { TypeAnimation } from 'react-type-animation';
 import { AppProvider } from '../../providers/app';
 import { useMintTarotNft } from '../ConnectWallet';
@@ -15,14 +16,10 @@ enum EStep {
   RESULT,
 }
 
-function Welcome({ onNext }: { onNext: () => void }) {
-  return <div onClick={onNext}>{/* <UserForm /> */}</div>;
-}
-
 function TarotAppContent({}: Props) {
-  const { handleMint } = useMintTarotNft();
+  const { handleMint, isLoading, mintData } = useMintTarotNft();
   const [step, setStep] = useState(EStep.WELCOME);
-  // const {} = use
+  const [isShowMint, setIsShowMint] = useState(false);
 
   const [result, setResult] = useState<any>();
   //   {
@@ -74,37 +71,46 @@ function TarotAppContent({}: Props) {
   //     action: 'NONE',
   //   },
   // }
-  function nextToPickCard() {
-    console.log('???');
 
+  function nextToPickCard() {
     setStep(EStep.PICK_CARD);
   }
 
   function nextToResult(data: any) {
-    console.log('data', data);
-
     setResult(data);
     setStep(EStep.RESULT);
   }
 
-  // const splitContent = useMemo(() => {
-  //   result.contentData?.text;
-  // }, [result.contentData?.text]);
-
-  React.useEffect(() => {
-    if (result?.contentData?.text) {
-      handleMint({
-        name: result.data?.name,
-        description: result.contentData?.text,
-        url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`,
-        metadata: JSON.stringify(result.data),
-      });
+  async function handleMintAction() {
+    if (mintData?.digest) {
+      window.open(`https://suiscan.xyz/devnet/tx/${mintData.digest}`);
+      return;
     }
-  }, [result?.contentData?.text, handleMint]);
+
+    if (result?.contentData?.text) {
+      try {
+        handleMint({
+          name: result.data?.name,
+          description: result.contentData?.text,
+          url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`,
+          metadata: JSON.stringify(result.data),
+        });
+      } catch (error) {}
+    }
+  }
+  useEffect(() => {
+    if (result?.contentData?.text) {
+      setTimeout(() => {
+        setIsShowMint(true);
+      }, 7000);
+    }
+    return () => {
+      setIsShowMint(false);
+    };
+  }, [result?.contentData?.text]);
 
   return (
     <div id="container">
-      {/* {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />} */}
       {step === EStep.WELCOME && <UserForm onNext={nextToPickCard} />}
       {step === EStep.PICK_CARD && <PickCard onComplete={nextToResult} />}
       {step === EStep.RESULT && (
@@ -114,23 +120,35 @@ function TarotAppContent({}: Props) {
               <CardTarot data={result.data} isOpened={true} isShowName />
             </div>
             <div className="p-5 w-[500px]">
-              <TypeAnimation
-                className="text-2xl"
-                style={{
-                  whiteSpace: 'pre-line',
-                  display: 'block',
-                }}
-                sequence={[result.contentData?.text]}
-                repeat={0}
-                speed={90}
-                cursor={false}
-              />
+              <div>
+                <TypeAnimation
+                  className="text-2xl whitespace-break-spaces"
+                  style={{
+                    whiteSpace: 'pre-line',
+                    display: 'block',
+                  }}
+                  wrapper="div"
+                  sequence={[result.contentData?.text]}
+                  repeat={0}
+                  speed={90}
+                  cursor={false}
+                />
+              </div>
               {/* <div
                 dangerouslySetInnerHTML={{
                   __html: nl2br(result.contentData?.text),
                 }}
                 className="text-2xl whitespace-break-spaces"
               ></div> */}
+              {isShowMint && (
+                <Button
+                  disabled={isLoading}
+                  onClick={handleMintAction}
+                  className="mt-5"
+                >
+                  {mintData ? 'View transaction' : 'Get your Tarot Card'}
+                </Button>
+              )}
             </div>
           </div>
         </div>

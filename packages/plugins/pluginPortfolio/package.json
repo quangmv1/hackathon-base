@@ -28,7 +28,8 @@
     "@repo/ui": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/store": "workspace:*",
-    "react-type-animation": "^3.2.0"
+    "react-type-animation": "^3.2.0",
+    "sonner": "^1.7.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
