@@ -29,7 +29,7 @@ const UserForm = ({onNext}:{
         backgroundImage: 'url(/images/star_bg.jpg)',
       }}
     >
-      <div onClick={onNext} className='jack-position'>
+      <div className='jack-position'>
         <img
           id='jack'
           src="/images/jack_banner.png"

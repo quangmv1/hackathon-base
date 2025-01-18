@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { TypeAnimation } from 'react-type-animation';
+import { AppProvider } from '../../providers/app';
+import { useMintTarotNft } from '../ConnectWallet';
 import UserForm from '../UserForm';
 import CardTarot from './CardTarot';
 import PickCard from './PickCard';
 import './style.css';
-import { nl2br } from './ultis';
-import { useMintTarotNft } from '../ConnectWallet';
-import { AppProvider } from '../../providers/app';
-import { ConnectButton } from '@mysten/dapp-kit';
 
 type Props = {};
 
@@ -95,12 +93,17 @@ function TarotAppContent({}: Props) {
 
   React.useEffect(() => {
     if (result?.contentData?.text) {
-      handleMint({ name: result.data?.name, description: result.contentData?.text, url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`, metadata: JSON.stringify(result.data) })
+      handleMint({
+        name: result.data?.name,
+        description: result.contentData?.text,
+        url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`,
+        metadata: JSON.stringify(result.data),
+      });
     }
-  }, [result?.contentData?.text, handleMint])
+  }, [result?.contentData?.text, handleMint]);
 
   return (
-    <div>
+    <div id="container">
       {/* {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />} */}
       {step === EStep.WELCOME && <UserForm onNext={nextToPickCard} />}
       {step === EStep.PICK_CARD && <PickCard onComplete={nextToResult} />}
@@ -132,14 +135,19 @@ function TarotAppContent({}: Props) {
           </div>
         </div>
       )}
+      {Array.from({ length: 50 }).map((_, index) => (
+        <div key={index} className="firefly"></div>
+      ))}
     </div>
   );
 }
 
 const TarotApp = () => {
-  return <AppProvider>
-    <TarotAppContent/>
-  </AppProvider>
-}
+  return (
+    <AppProvider>
+      <TarotAppContent />
+    </AppProvider>
+  );
+};
 
 export default TarotApp;
