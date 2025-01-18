@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TypeAnimation } from 'react-type-animation';
+import UserForm from '../UserForm';
 import CardTarot from './CardTarot';
 import PickCard from './PickCard';
 import './style.css';
@@ -13,15 +14,7 @@ enum EStep {
 }
 
 function Welcome({ onNext }: { onNext: () => void }) {
-  return (
-    <div onClick={onNext}>
-      <img
-        src="/images/fortune_teller.png"
-        alt="fortune_teller"
-        className="w-52 h-80"
-      />
-    </div>
-  );
+  return <div onClick={onNext}>{/* <UserForm /> */}</div>;
 }
 
 function TarotApp({}: Props) {
@@ -78,6 +71,8 @@ function TarotApp({}: Props) {
   //   },
   // }
   function nextToPickCard() {
+    console.log('???');
+
     setStep(EStep.PICK_CARD);
   }
 
@@ -94,7 +89,8 @@ function TarotApp({}: Props) {
 
   return (
     <div>
-      {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />}
+      {/* {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />} */}
+      {step === EStep.WELCOME && <UserForm onNext={nextToPickCard} />}
       {step === EStep.PICK_CARD && <PickCard onComplete={nextToResult} />}
       {step === EStep.RESULT && (
         <div className="p-10 flex justify-center items-center fixed inset-0">
