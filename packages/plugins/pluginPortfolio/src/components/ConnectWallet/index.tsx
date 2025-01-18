@@ -55,6 +55,8 @@ export const ConnectWallet: React.FC = () => {
   const { mutateAsync: signTransaction } = useSignTransaction();
   const autoConnectionStatus = useAutoConnectWallet();
 
+  const handleTransferNft = () => {};
+
   const handleMint = React.useCallback(async () => {
     const tx = new Transaction();
     let name = 'Default Name',
