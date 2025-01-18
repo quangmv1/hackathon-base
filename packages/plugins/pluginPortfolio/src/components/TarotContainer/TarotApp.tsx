@@ -3,6 +3,9 @@ import CardTarot from './CardTarot';
 import PickCard from './PickCard';
 import './style.css';
 import { nl2br } from './ultis';
+import { useMintTarotNft } from '../ConnectWallet';
+import { AppProvider } from '../../providers/app';
+import { ConnectButton } from '@mysten/dapp-kit';
 type Props = {};
 
 enum EStep {
@@ -13,18 +16,24 @@ enum EStep {
 
 function Welcome({ onNext }: { onNext: () => void }) {
   return (
-    <div onClick={onNext}>
+    <div>
+      <div onClick={onNext}>
       <img
         src="/images/fortune_teller.png"
         alt="fortune_teller"
         className="w-52 h-80"
       />
     </div>
+      <ConnectButton className={'p-2'} />
+
+    </div>
   );
 }
 
-function TarotApp({}: Props) {
+function TarotAppContent({}: Props) {
+  const { handleMint } = useMintTarotNft();
   const [step, setStep] = useState(EStep.WELCOME);
+  // const {} = use
 
   const [result, setResult] = useState<any>({
     data: {
@@ -57,7 +66,7 @@ function TarotApp({}: Props) {
       Affirmation: '"I strive to be stable and fair-minded."',
       'Questions to Ask': [
         'What wise person could be consulted for good advice?',
-        "How can I make sure I'm being as objective and fair as possible?",
+        'How can I make sure I\'m being as objective and fair as possible?',
         'To what extent am I capable of keeping a "stiff upper lip?"',
       ],
     },
@@ -82,6 +91,12 @@ function TarotApp({}: Props) {
     result.contentData?.text;
   }, [result.contentData?.text]);
 
+  React.useEffect(() => {
+    if (result.contentData?.text) {
+      handleMint({ name: result.data?.name, description: result.contentData?.text, url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`, metadata: JSON.stringify(result.data) })
+    }
+  }, [result.contentData?.text, handleMint])
+
   return (
     <div>
       {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />}
@@ -105,6 +120,12 @@ function TarotApp({}: Props) {
       )}
     </div>
   );
+}
+
+const TarotApp = () => {
+  return <AppProvider>
+    <TarotAppContent/>
+  </AppProvider>
 }
 
 export default TarotApp;

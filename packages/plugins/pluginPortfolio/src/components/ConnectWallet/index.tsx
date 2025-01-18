@@ -254,14 +254,14 @@ export const ConnectWallet: React.FC = () => {
       <div className="App-header">
         <ConnectButton className={'p-2'} />
       </div>
-      <Button
+      {/* <Button
         onClick={() => {
           handleMint();
         }}
       >
         {' '}
         Mint NFT{' '}
-      </Button>
+      </Button> */}
     </div>
   );
 };

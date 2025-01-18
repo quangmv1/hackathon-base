@@ -250,7 +250,7 @@ const SortableItem = React.forwardRef<HTMLDivElement, SortableItemProps>(
     )
     const style: React.CSSProperties = {
       opacity: isDragging ? 0.5 : 1,
-      transform: CSS.Translate.toString(transform),
+      transform: CSS.Translate?.toString(transform),
       // transform: isDragging ? "scale(1.05)" : "scale(1)",
       transition,
       boxShadow: isDragging
