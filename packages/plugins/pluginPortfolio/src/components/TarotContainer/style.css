@@ -1,9 +1,9 @@
 /* The flip card container - set the width and height to whatever you want. We have added the border property to demonstrate that the flip itself goes out of the box on hover (remove perspective if you don't want the 3D effect */
 .flip-card {
   background-color: transparent;
-  width: 300px;
-  height: 200px;
-  border: 1px solid #f1f1f1;
+  /* width: 350px;
+  height: 600px; */
+  /* border: 1px solid #f1f1f1; */
   perspective: 1000px; /* Remove this if you don't want the 3D effect */
 }
 
@@ -18,9 +18,10 @@
 }
 
 /* Do an horizontal flip when you move the mouse over the flip box container */
-/* .flip-card:hover .flip-card-inner {
-  transform: rotateY(180deg);
-} */
+.flip-card:hover .flip-card-inner {
+  transform: scale(1.05);
+  transition: 0.3s;
+}
 
 .flip-card.flip-card-opened .flip-card-inner {
   transform: rotateY(180deg);
@@ -38,7 +39,7 @@
 
 /* Style the front side (fallback if image is missing) */
 .flip-card-front {
-  background-color: #bbb;
+  /* background-color: #bbb; */
   color: black;
 }
 
@@ -47,4 +48,59 @@
   background-color: dodgerblue;
   color: white;
   transform: rotateY(180deg);
+}
+
+:root {
+  --container-width: 100vw;
+  /* --container-height: 700px; */
+}
+
+.container {
+  margin: 20px auto;
+  width: var(--container-width);
+  height: var(--container-height);
+  /* border: 2px solid red; */
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+
+  grid-gap: 8px;
+}
+
+.box {
+  border: 3px solid rgb(255, 132, 75);
+  display: inline-block;
+  background-color: rgb(255, 202, 29);
+}
+
+.typewriter h1 {
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: 0.15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: 0.15em; /* Adjust as needed */
+  animation:
+    typing 3.5s steps(40, end),
+    blink-caret 0.75s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: orange;
+  }
 }
