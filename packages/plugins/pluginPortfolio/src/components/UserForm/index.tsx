@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Input } from '@repo/ui';
-import './style.css';
 import {
+  ConnectButton,
   ConnectModal,
   useAutoConnectWallet,
   useCurrentAccount,
-  ConnectButton,
 } from '@mysten/dapp-kit';
+import { Button, Input } from '@repo/ui';
+import React, { useEffect, useState } from 'react';
 import { useFetchAccountNftTokens } from '../ConnectWallet';
+import './style.css';
 
 interface Props {
   onNext: () => void;
@@ -74,31 +74,39 @@ export const ViewTarotCard = ({
 
   return (
     <div>
-      <Button onClick={toggleViewCard}>Back</Button>
-      <table className="w-full">
-        {nftList?.map(
-          (nft) =>
-            nft?.content?.fields?.url && (
-              <tr key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}>
-                <th>
-                  <figure>
+      <div className="py-2">
+        <Button className="pl-5" onClick={toggleViewCard}>
+          Back
+        </Button>
+      </div>
+      <div className="overflow-y-auto max-h-[calc(100vh_-_50px)] py-5">
+        <div className="w-full max-w-screen-lg mx-auto gap-2">
+          {nftList?.map(
+            (nft) =>
+              nft?.content?.fields?.url && (
+                <div
+                  className="flex gap-2"
+                  key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}
+                >
+                  <div className="flex-shrink-0">
                     <img
                       src={nft.content.fields.url}
                       alt="Image Of Parcels"
                       width="150"
                       height="150"
                     />
-                    <figcaption> {nft?.content?.fields?.name} </figcaption>
-                  </figure>
-                </th>
-                <th className="text-left pl-5">
-                  {' '}
-                  {nft?.content?.fields?.description}{' '}
-                </th>
-              </tr>
-            )
-        )}
-      </table>
+                    <div className="text-sm text-center py-2">
+                      {nft?.content?.fields?.name}
+                    </div>
+                  </div>
+                  <div className="flex justify-center items-center text-lg">
+                    <div>{nft?.content?.fields?.description}</div>
+                  </div>
+                </div>
+              )
+          )}
+        </div>
+      </div>
     </div>
   );
 };
@@ -148,7 +156,6 @@ const UserForm = ({ onNext, toggleViewCard }: Props) => {
         backgroundPosition: 'cover',
         backgroundRepeat: 'repeat-x',
       }}
-
     >
       <div className="jack-position">
         <div className="animate-wiggle">
