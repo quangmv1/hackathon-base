@@ -1,7 +1,7 @@
 import { useGlobalHook, useRegisterPlugin } from '@repo/plugin-sdk';
-import React from 'react';
-import Portfolio from './components/Portfolio';
 import { TUserInfo } from '@repo/store/types';
+import React from 'react';
+import TarotContainer from './components/TarotContainer';
 
 export const PluginPortfolio = () => {
   const { add_hook, do_action } = useGlobalHook();
@@ -38,9 +38,8 @@ export const PluginPortfolio = () => {
   });
   return (
     <div className="border rounded-lg p-4 border-dividerColorDefault">
-      This is Plugin Portfolio
-      <Portfolio />
       {do_action('subtitle')}
+      <TarotContainer />
     </div>
   );
 };
