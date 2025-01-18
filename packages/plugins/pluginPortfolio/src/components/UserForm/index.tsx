@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Input } from '@repo/ui';
+import React, { useEffect, useState } from 'react';
+import { Button, Input } from '@repo/ui';
 import './style.css';
-import { ConnectButton } from '@mysten/dapp-kit';
+import { ConnectModal, useCurrentAccount } from '@mysten/dapp-kit';
 
 const UserForm = ({onNext}:{
   onNext: ()=>void
@@ -9,6 +9,8 @@ const UserForm = ({onNext}:{
 
   const [name, setName] = React.useState('');
   const [birthDate, setBirthDate] = React.useState('');
+  const currentAccount = useCurrentAccount();
+	const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const el = document.getElementById('jack');
@@ -16,6 +18,10 @@ const UserForm = ({onNext}:{
       el?.classList.add('expand-img');
     }, 300);
   },[])
+
+  useEffect(() => {
+    if (currentAccount && name) onNext()
+  }, [currentAccount, name])
 
   return (
     <div className='bg-black p-8 w-[1024px] mt-[20vh] mx-auto rounded-[24px] relative'
@@ -56,11 +62,13 @@ const UserForm = ({onNext}:{
 
       </div>
 
-      <ConnectButton className={'p-2'} />
-      {/* <Button onClick={()=>{
-        console.log("onNext");
-        onNext()
-      }} >Connect 2</Button> */}
+      <ConnectModal
+			trigger={
+				<Button disabled={!!currentAccount || !name}> {currentAccount ? 'Connected' : 'Connect'}</Button>
+			}
+			open={open}
+			onOpenChange={(isOpen) => setOpen(isOpen)}
+		/>
     </div>
   );
 }

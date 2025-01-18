@@ -94,10 +94,10 @@ function TarotAppContent({}: Props) {
   // }, [result.contentData?.text]);
 
   React.useEffect(() => {
-    if (result.contentData?.text) {
+    if (result?.contentData?.text) {
       handleMint({ name: result.data?.name, description: result.contentData?.text, url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`, metadata: JSON.stringify(result.data) })
     }
-  }, [result.contentData?.text, handleMint])
+  }, [result?.contentData?.text, handleMint])
 
   return (
     <div>
