@@ -1,10 +1,10 @@
 import { useGlobalHook, useRegisterPlugin } from '@repo/plugin-sdk';
-// import { TUserInfo } from '@repo/store/types';
 import React from 'react';
+import { AppProvider } from './providers/app';
 import TarotContainer from './components/TarotContainer';
 
 export const PluginPortfolio = () => {
-  const { add_hook, do_action } = useGlobalHook();
+  const { add_hook } = useGlobalHook();
 
   const bootstrap = () => {
     //This fn can be extracted;
@@ -39,9 +39,12 @@ export const PluginPortfolio = () => {
     bootstrap,
   });
   return (
-    <div className="border rounded-lg p-4 border-dividerColorDefault">
-      {do_action('subtitle')}
+    <AppProvider>
+      <div className="border rounded-lg p-4 border-dividerColorDefault">
+        {/* <ConnectWallet /> */}
       <TarotContainer />
-    </div>
+      </div>
+    </AppProvider>
+
   );
 };

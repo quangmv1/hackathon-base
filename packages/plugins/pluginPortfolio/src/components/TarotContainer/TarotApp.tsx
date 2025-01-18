@@ -4,6 +4,10 @@ import UserForm from '../UserForm';
 import CardTarot from './CardTarot';
 import PickCard from './PickCard';
 import './style.css';
+import { nl2br } from './ultis';
+import { useMintTarotNft } from '../ConnectWallet';
+import { AppProvider } from '../../providers/app';
+import { ConnectButton } from '@mysten/dapp-kit';
 
 type Props = {};
 
@@ -17,8 +21,10 @@ function Welcome({ onNext }: { onNext: () => void }) {
   return <div onClick={onNext}>{/* <UserForm /> */}</div>;
 }
 
-function TarotApp({}: Props) {
+function TarotAppContent({}: Props) {
+  const { handleMint } = useMintTarotNft();
   const [step, setStep] = useState(EStep.WELCOME);
+  // const {} = use
 
   const [result, setResult] = useState<any>();
   //   {
@@ -87,6 +93,12 @@ function TarotApp({}: Props) {
   //   result.contentData?.text;
   // }, [result.contentData?.text]);
 
+  React.useEffect(() => {
+    if (result?.contentData?.text) {
+      handleMint({ name: result.data?.name, description: result.contentData?.text, url: result.data?.imgUrl ?? `/images/cards/${result.data?.img}`, metadata: JSON.stringify(result.data) })
+    }
+  }, [result?.contentData?.text, handleMint])
+
   return (
     <div>
       {/* {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />} */}
@@ -122,6 +134,12 @@ function TarotApp({}: Props) {
       )}
     </div>
   );
+}
+
+const TarotApp = () => {
+  return <AppProvider>
+    <TarotAppContent/>
+  </AppProvider>
 }
 
 export default TarotApp;
