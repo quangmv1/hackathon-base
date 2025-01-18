@@ -137,8 +137,6 @@ const useFetchAccountTokens = () => {
         .then((result) => result as SuiAccountObject)
         .catch(() => null);
 
-      console.log('🚀 ~ queryFn: ~ json:', json);
-
       if (Array.isArray(json?.nfts)) {
         const promise = await Promise.all(
           json.nfts.map(async (nft) => {
@@ -220,8 +218,6 @@ export const useMintTarotNft = () => {
 
       tx.setGasBudget(gasBudget);
 
-      console.log('🚀 ~ handleMint ~ tx:', tx);
-
       // transfer the split coin to a specific address
       const { bytes, signature } = await signTransaction({
         transaction: tx,
@@ -248,7 +244,6 @@ export const useMintTarotNft = () => {
 };
 
 export const ConnectWallet: React.FC = () => {
-  const { handleMint } = useMintTarotNft();
   return (
     <div className="App">
       <div className="App-header">

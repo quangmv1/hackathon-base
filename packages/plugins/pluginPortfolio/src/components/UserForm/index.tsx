@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import { Button, Input } from '@repo/ui';
+import { Input } from '@repo/ui';
 import './style.css';
+import { ConnectButton } from '@mysten/dapp-kit';
 const UserForm = () => {
 
   const [name, setName] = React.useState('');
@@ -33,11 +34,10 @@ const UserForm = () => {
           <Input
             type="text"
             placeholder="Your name"
-            className="p-4 h-14 text-[24px] border rounded-sm border-dividerColorDefault bg-black rounded-[12px]"
+            className="p-4 h-14 text-[24px] border border-dividerColorDefault bg-black rounded-[12px]"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          
         </div>
 
         <div className='ml-4 text-bold'>
@@ -47,16 +47,14 @@ const UserForm = () => {
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
             placeholder="0.0"
-            className="p-4 h-14 text-[24px] border rounded-sm border-dividerColorDefault bg-black rounded-[12px]"
+            className="p-4 h-14 text-[24px] border border-dividerColorDefault bg-black rounded-[12px]"
           />
         </div>
 
       </div>
 
-      <Button >Connect</Button>
+      <ConnectButton className={'p-2'} />
     </div>
-   
   );
 }
- 
 export default UserForm;
