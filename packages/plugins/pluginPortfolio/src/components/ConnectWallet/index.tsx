@@ -1,61 +1,193 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ConnectButton,
-  useAutoConnectWallet,
   useCurrentAccount,
   useSignTransaction,
   useSuiClient,
-  useSuiClientQuery,
 } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import React from 'react';
 
 import { Button } from '@repo/ui';
+import { useQuery } from '@tanstack/react-query';
 
-function OwnedObjects({ address }: { address: string }) {
-  const { data } = useSuiClientQuery('getOwnedObjects', {
-    owner: address,
-  });
-  if (!data) {
-    return null;
-  }
-
-  return (
-    <ul>
-      {data.data.map((object) => (
-        <li key={object.data?.objectId}>
-          <a
-            href={`https://example-explorer.com/object/${object.data?.objectId}`}
-          >
-            {object.data?.objectId}
-          </a>
-        </li>
-      ))}
-    </ul>
-  );
+export interface SuiAccountObject {
+  coins: Coin[];
+  nfts: Nft[];
+  domains: any[];
+  unknowns: any[];
+  kiosks: any[];
 }
 
-function ConnectedAccount() {
+export interface Coin {
+  objectCount: number;
+  type: string;
+  lockedBalance: null;
+  totalBalance: number;
+  bridge: boolean;
+  decimals: number;
+  denom: string;
+  name: string;
+  symbol: string;
+  verified: boolean;
+  objectType: string;
+  tokenPrice: number;
+  iconUrl: string;
+  noMetadata: boolean;
+  scamMessage: null;
+  afSupported: boolean;
+}
+
+export interface Nft {
+  objectType: string;
+  type: string;
+  icon: string;
+  name: string;
+  objectId: string;
+  scamMessage: null;
+  amount: number;
+  objectCount: number;
+}
+
+export interface ObjectNFT {
+  jsonrpc: string;
+  id: number;
+  result: Result;
+}
+
+export interface Result {
+  data: Data;
+}
+
+export interface Data {
+  objectId: string;
+  version: string;
+  digest: string;
+  type: string;
+  owner: Owner;
+  previousTransaction: string;
+  storageRebate: string;
+  display: Display;
+  content: Content;
+  bcs: Bcs;
+}
+
+export interface Bcs {
+  dataType: string;
+  type: string;
+  hasPublicTransfer: boolean;
+  version: number;
+  bcsBytes: string;
+}
+
+export interface Content {
+  dataType: string;
+  type: string;
+  hasPublicTransfer: boolean;
+  fields: Fields;
+}
+
+export interface Fields {
+  description: string;
+  id: ID;
+  metadata: string;
+  name: string;
+  url: string;
+}
+
+export interface ID {
+  id: string;
+}
+
+export interface Display {
+  data: null;
+  error: null;
+}
+
+export interface Owner {
+  AddressOwner: string;
+}
+
+const TAROT_NFT_PACKAGE =
+  '0x2801a62547b9eb7e617fb9de58877a7fff5a25c0aab59f03e179e3850b8d353e';
+
+const useFetchAccountTokens = () => {
   const account = useCurrentAccount();
 
-  if (!account) {
-    return null;
-  }
+  return useQuery({
+    queryKey: ['api/accounts/objects', account?.address],
+    queryFn: async () => {
+      const myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
 
-  return (
-    <div>
-      <div className="truncate">Connected to {account.address}</div>;
-      {/* <OwnedObjects address={account.address} /> */}
-    </div>
-  );
-}
+      const raw = JSON.stringify({
+        objectTypes: ['coin', 'nft', 'unknown', 'kiosk', 'domains'],
+      });
 
-export const ConnectWallet: React.FC = () => {
+      const json = await fetch(
+        `https://suiscan.xyz/api/sui-backend/devnet/api/accounts/${account?.address}/objects`,
+        {
+          method: 'POST',
+          headers: myHeaders,
+          body: raw,
+          redirect: 'follow',
+        }
+      )
+        .then((response) => response.json())
+        .then((result) => result as SuiAccountObject)
+        .catch(() => null);
+
+      console.log('🚀 ~ queryFn: ~ json:', json);
+
+      if (Array.isArray(json?.nfts)) {
+        const promise = await Promise.all(
+          json.nfts.map(async (nft) => {
+            const raw = JSON.stringify({
+              jsonrpc: '2.0',
+              id: 1,
+              method: 'sui_getObject',
+              params: [
+                nft.objectId,
+                {
+                  showType: true,
+                  showOwner: true,
+                  showPreviousTransaction: true,
+                  showDisplay: true,
+                  showContent: true,
+                  showBcs: true,
+                  showStorageRebate: true,
+                },
+              ],
+            });
+
+            const arr = await fetch('https://suiscan.xyz/api/sui/devnet/', {
+              method: 'POST',
+              headers: myHeaders,
+              body: raw,
+              redirect: 'follow',
+            })
+              .then((response) => response.json())
+              .then((result) => result as ObjectNFT)
+              .catch(() => null);
+
+            return arr?.result?.data;
+          })
+        );
+
+        if (promise) return promise;
+        return [];
+      }
+
+      return [];
+    },
+    enabled: !!account?.address,
+  });
+};
+
+export const useMintTarotNft = () => {
   const client = useSuiClient();
   const { mutateAsync: signTransaction } = useSignTransaction();
-  const autoConnectionStatus = useAutoConnectWallet();
-
-  const handleTransferNft = () => {};
+  useFetchAccountTokens();
 
   const handleMint = React.useCallback(async () => {
     const tx = new Transaction();
@@ -74,8 +206,7 @@ export const ConnectWallet: React.FC = () => {
         tx.pure.string(url),
         tx.pure.string(metadata),
       ],
-      package:
-        '0x2801a62547b9eb7e617fb9de58877a7fff5a25c0aab59f03e179e3850b8d353e',
+      package: TAROT_NFT_PACKAGE,
     });
 
     tx.setGasBudget(gasBudget);
@@ -83,12 +214,10 @@ export const ConnectWallet: React.FC = () => {
     console.log('🚀 ~ handleMint ~ tx:', tx);
 
     // transfer the split coin to a specific address
-    const { bytes, signature, reportTransactionEffects } =
-      await signTransaction({
-        transaction: tx,
-        chain: 'sui:devnet',
-      });
-    console.log('🚀 ~ handleMint ~ signature:', signature, bytes);
+    const { bytes, signature } = await signTransaction({
+      transaction: tx,
+      chain: 'sui:devnet',
+    });
 
     const executeResult = await client.executeTransactionBlock({
       transactionBlock: bytes,
@@ -97,19 +226,22 @@ export const ConnectWallet: React.FC = () => {
         showRawEffects: true,
       },
     });
-    console.log('🚀 ~ handleMint ~ executeResult:', executeResult);
-
-    // Always report transaction effects to the wallet after execution
-    reportTransactionEffects(executeResult.rawEffects);
 
     console.log(executeResult);
+    setTimeout(() => {
+      window.open(`https://suiscan.xyz/devnet/tx/${executeResult.digest}`);
+    }, 1_500);
   }, []);
 
+  return { handleMint };
+};
+
+export const ConnectWallet: React.FC = () => {
+  const { handleMint } = useMintTarotNft();
   return (
     <div className="App">
       <div className="App-header">
         <ConnectButton className={'p-2'} />
-        <div>Auto-connection status: {autoConnectionStatus}</div>
       </div>
       <Button onClick={handleMint}> Mint NFT </Button>
     </div>
