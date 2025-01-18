@@ -1,5 +1,5 @@
 import { useGlobalHook, useRegisterPlugin } from '@repo/plugin-sdk';
-import { TUserInfo } from '@repo/store/types';
+// import { TUserInfo } from '@repo/store/types';
 import React from 'react';
 import TarotContainer from './components/TarotContainer';
 
@@ -21,10 +21,10 @@ export const PluginPortfolio = () => {
       'dataPortfolio',
       (...args: any[]) => {
         console.log('Args in dataPortfolio:', args);
-        const [mockUserInfo, inputAddress] = args;
-        const result = mockUserInfo.filter(
-          (user: TUserInfo) => user.address === inputAddress
-        );
+        // const [mockUserInfo, inputAddress] = args;
+        // const result = mockUserInfo.filter(
+        //   (user: TUserInfo) => user.address === inputAddress
+        // );
         // return result;
         return null;
       },

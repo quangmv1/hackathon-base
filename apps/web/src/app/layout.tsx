@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Bricolage_Grotesque } from 'next/font/google'
 import Layout from '../layouts'
 import Provider from '../provider'
+import { Modal } from '../../../../packages/screens/src/components/HomeScreen/Modal'
 const bricolage_grotesque = Bricolage_Grotesque({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700', '800'],

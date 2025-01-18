@@ -1,4 +1,5 @@
 import React from 'react';
+import Welcome from '../Welcome';
 // import { tarotData } from '../../assets/data';
 // import CardTarot from './CardTarot';
 
@@ -10,6 +11,8 @@ function TarotContainer({}: Props) {
       {/* {tarotData.map((tarot, index) => (
         <CardTarot key={index} data={tarot} />
       ))} */}
+
+      <Welcome />
     </div>
   );
 }
