@@ -153,7 +153,7 @@ function TarotAppContent({}: Props) {
           </div>
         </div>
       )}
-      {Array.from({ length: 50 }).map((_, index) => (
+      {Array.from({ length: 15 }).map((_, index) => (
         <div key={index} className="firefly"></div>
       ))}
     </div>
