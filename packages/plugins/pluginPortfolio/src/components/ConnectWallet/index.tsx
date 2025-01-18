@@ -189,49 +189,60 @@ export const useMintTarotNft = () => {
   const { mutateAsync: signTransaction } = useSignTransaction();
   useFetchAccountTokens();
 
-  const handleMint = React.useCallback(async () => {
-    const tx = new Transaction();
-    let name = 'Default Name',
-      description = 'Default Description',
-      url = 'https://example.com',
-      metadata = 'https://example.com';
-    const gasBudget = 20_000_000;
+  const handleMint = React.useCallback(
+    async (props?: {
+      name: string;
+      description: string;
+      url: string;
+      metadata: string;
+    }) => {
+      const tx = new Transaction();
+      let name = props?.name ?? 'Default Name',
+        description = props?.description ?? 'Default Description',
+        url = props?.url ?? 'https://example.com',
+        metadata =
+          typeof props?.metadata === 'string'
+            ? props?.metadata
+            : JSON.stringify(props?.metadata ?? {});
+      const gasBudget = 20_000_000;
 
-    tx.moveCall({
-      function: 'mint_to_sender',
-      module: 'testnet_nft',
-      arguments: [
-        tx.pure.string(name),
-        tx.pure.string(description),
-        tx.pure.string(url),
-        tx.pure.string(metadata),
-      ],
-      package: TAROT_NFT_PACKAGE,
-    });
+      tx.moveCall({
+        function: 'mint_to_sender',
+        module: 'testnet_nft',
+        arguments: [
+          tx.pure.string(name),
+          tx.pure.string(description),
+          tx.pure.string(url),
+          tx.pure.string(metadata),
+        ],
+        package: TAROT_NFT_PACKAGE,
+      });
 
-    tx.setGasBudget(gasBudget);
+      tx.setGasBudget(gasBudget);
 
-    console.log('🚀 ~ handleMint ~ tx:', tx);
+      console.log('🚀 ~ handleMint ~ tx:', tx);
 
-    // transfer the split coin to a specific address
-    const { bytes, signature } = await signTransaction({
-      transaction: tx,
-      chain: 'sui:devnet',
-    });
+      // transfer the split coin to a specific address
+      const { bytes, signature } = await signTransaction({
+        transaction: tx,
+        chain: 'sui:devnet',
+      });
 
-    const executeResult = await client.executeTransactionBlock({
-      transactionBlock: bytes,
-      signature,
-      options: {
-        showRawEffects: true,
-      },
-    });
+      const executeResult = await client.executeTransactionBlock({
+        transactionBlock: bytes,
+        signature,
+        options: {
+          showRawEffects: true,
+        },
+      });
 
-    console.log(executeResult);
-    setTimeout(() => {
-      window.open(`https://suiscan.xyz/devnet/tx/${executeResult.digest}`);
-    }, 1_500);
-  }, []);
+      console.log(executeResult);
+      setTimeout(() => {
+        window.open(`https://suiscan.xyz/devnet/tx/${executeResult.digest}`);
+      }, 1_500);
+    },
+    []
+  );
 
   return { handleMint };
 };
@@ -243,7 +254,14 @@ export const ConnectWallet: React.FC = () => {
       <div className="App-header">
         <ConnectButton className={'p-2'} />
       </div>
-      <Button onClick={handleMint}> Mint NFT </Button>
+      <Button
+        onClick={() => {
+          handleMint();
+        }}
+      >
+        {' '}
+        Mint NFT{' '}
+      </Button>
     </div>
   );
 };
