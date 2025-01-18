@@ -1,20 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 // import Image from 'next/image'
-
 import Typewriter from 'typewriter-effect';
-import UserForm from '../UserForm';
-
+import TarotApp from '../TarotContainer/TarotApp';
 
 const Welcome = () => {
   const openModalSection = () => {
     window?.openModal({
-      content: <UserForm/>,
-      contentClassName: 'rounded-[24px]',
-    })
-  }
+      content: <TarotApp />,
+      // contentClassName: 'rounded-[24px]',
+    });
+  };
   return (
-    <div className='flex items-center cursor-pointer' onClick={openModalSection}>
-      <div className='flex justify-center items-center rounded-lg w-48 h-48'>
+    <div
+      className="flex items-center cursor-pointer"
+      onClick={openModalSection}
+    >
+      <div className="flex justify-center items-center rounded-lg w-48 h-48">
         <img
           src="/images/fortune_logo.png"
           alt="fortune_teller"
@@ -22,43 +23,38 @@ const Welcome = () => {
         />
       </div>
 
-      <div className='font-semibold text-[32px] text-link'>
-          <Typewriter
-            options={{
-              cursor: '',
-              delay: 75
-            }}
-           onInit={(typewriter) => {
-            typewriter.typeString('PROPHESY')
-              .start();
+      <div className="font-semibold text-[32px] text-link">
+        <Typewriter
+          options={{
+            cursor: '',
+            delay: 75,
           }}
-          />
-          <Typewriter
-            options={{
-              cursor: '',
-              delay: 25
-            }}
-           onInit={(typewriter) => {
+          onInit={(typewriter) => {
+            typewriter.typeString('PROPHESY').start();
+          }}
+        />
+        <Typewriter
+          options={{
+            cursor: '',
+            delay: 25,
+          }}
+          onInit={(typewriter) => {
             setTimeout(() => {
-              typewriter.typeString('YOUR')
-              .start();
-            }, 700)
-           
+              typewriter.typeString('YOUR').start();
+            }, 700);
           }}
-          />
-          <Typewriter
-            options={{
-              cursor: '',
-              delay: 25
-            }}
-            onInit={(typewriter) => {
-              setTimeout(() => {
-                typewriter.typeString('FATE')
-                .start();
-              }, 1000) 
-              
-            }}
-          />
+        />
+        <Typewriter
+          options={{
+            cursor: '',
+            delay: 25,
+          }}
+          onInit={(typewriter) => {
+            setTimeout(() => {
+              typewriter.typeString('FATE').start();
+            }, 1000);
+          }}
+        />
       </div>
     </div>
   );
