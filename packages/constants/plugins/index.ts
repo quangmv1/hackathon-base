@@ -42,7 +42,7 @@ export const PLUGINS: TPluginData[] = [
     description: 'Data portfolio user',
     image: 'https://coin98.s3.amazonaws.com/ew00D2Rxrc031LBw',
     plugin: PluginPortfolio,
-    size: '12x12',
+    size: '4x3',
     status: 'active',
   },
 ]
