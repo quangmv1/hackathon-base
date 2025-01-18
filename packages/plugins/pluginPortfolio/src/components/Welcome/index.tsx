@@ -8,12 +8,13 @@ import UserForm from '../UserForm';
 const Welcome = () => {
   const openModalSection = () => {
     window?.openModal({
-      content: <UserForm/>
+      content: <UserForm/>,
+      contentClassName: 'rounded-[24px]',
     })
   }
   return (
     <div className='flex items-center cursor-pointer' onClick={openModalSection}>
-      <div className='flex justify-center items-center rounded-lg w-48 h-48' >
+      <div className='flex justify-center items-center rounded-lg w-48 h-48'>
         <img
           src="/images/fortune_logo.png"
           alt="fortune_teller"
