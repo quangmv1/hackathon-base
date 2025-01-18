@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { TypeAnimation } from 'react-type-animation';
-import UserForm from '../UserForm';
+import { AppProvider } from '../../providers/app';
+import { useMintTarotNft } from '../ConnectWallet';
+import UserForm, { ViewTarotCard } from '../UserForm';
 import CardTarot from './CardTarot';
 import PickCard from './PickCard';
 import './style.css';
-import { nl2br } from './ultis';
-import { useMintTarotNft } from '../ConnectWallet';
-import { AppProvider } from '../../providers/app';
-import { ConnectButton } from '@mysten/dapp-kit';
 
 type Props = {};
 
@@ -15,6 +13,7 @@ enum EStep {
   WELCOME,
   PICK_CARD,
   RESULT,
+  VIEW_CARD
 }
 
 function Welcome({ onNext }: { onNext: () => void }) {
@@ -24,7 +23,6 @@ function Welcome({ onNext }: { onNext: () => void }) {
 function TarotAppContent({}: Props) {
   const { handleMint } = useMintTarotNft();
   const [step, setStep] = useState(EStep.WELCOME);
-  // const {} = use
 
   const [result, setResult] = useState<any>();
   //   {
@@ -82,9 +80,15 @@ function TarotAppContent({}: Props) {
     setStep(EStep.PICK_CARD);
   }
 
+  const toggleViewCard = () => {
+    setStep( pre =>{
+      console.log(pre)
+      return  pre === EStep.VIEW_CARD ? EStep.WELCOME : EStep.VIEW_CARD
+    })
+  }
+
   function nextToResult(data: any) {
     console.log('data', data);
-
     setResult(data);
     setStep(EStep.RESULT);
   }
@@ -102,7 +106,8 @@ function TarotAppContent({}: Props) {
   return (
     <div>
       {/* {step === EStep.WELCOME && <Welcome onNext={nextToPickCard} />} */}
-      {step === EStep.WELCOME && <UserForm onNext={nextToPickCard} />}
+      {step === EStep.WELCOME && <UserForm onNext={nextToPickCard} toggleViewCard={toggleViewCard} />}
+      {step === EStep.VIEW_CARD && <ViewTarotCard toggleViewCard={toggleViewCard} />}
       {step === EStep.PICK_CARD && <PickCard onComplete={nextToResult} />}
       {step === EStep.RESULT && (
         <div className="p-10 flex justify-center items-center fixed inset-0">

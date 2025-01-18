@@ -111,7 +111,7 @@ export interface Owner {
 const TAROT_NFT_PACKAGE =
   '0x2801a62547b9eb7e617fb9de58877a7fff5a25c0aab59f03e179e3850b8d353e';
 
-const useFetchAccountTokens = () => {
+export const useFetchAccountNftTokens = () => {
   const account = useCurrentAccount();
 
   return useQuery({
@@ -172,7 +172,7 @@ const useFetchAccountTokens = () => {
           })
         );
 
-        if (promise) return promise;
+        if (promise) return promise as Data[]
         return [];
       }
 
@@ -185,7 +185,6 @@ const useFetchAccountTokens = () => {
 export const useMintTarotNft = () => {
   const client = useSuiClient();
   const { mutateAsync: signTransaction } = useSignTransaction();
-  useFetchAccountTokens();
 
   const handleMint = React.useCallback(
     async (props?: {

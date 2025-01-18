@@ -16,7 +16,7 @@ export const AppProvider: React.FC<React.PropsWithChildren> = ({
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networks} defaultNetwork="devnet">
-        <WalletProvider>{children}</WalletProvider>
+        <WalletProvider autoConnect >{children}</WalletProvider>
       </SuiClientProvider>
     </QueryClientProvider>
   );
