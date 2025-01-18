@@ -1,7 +1,8 @@
 import { useGlobalHook, useRegisterPlugin } from '@repo/plugin-sdk';
 import React from 'react';
-import Portfolio from './components/Portfolio';
+// import Portfolio from './components/Portfolio';
 import { TUserInfo } from '@repo/store/types';
+import AnhTuan from './components/AnhTuan';
 
 export const PluginPortfolio = () => {
   const { add_hook, do_action } = useGlobalHook();
@@ -11,7 +12,8 @@ export const PluginPortfolio = () => {
     add_hook(
       'subtitle',
       () => {
-        return <div>Plugin contents 123</div>;
+        // return <div>Plugin contents 123</div>;
+        return <div>AI Pro Tarrot</div>;
       },
       'action',
       'PluginPortfolio'
@@ -24,7 +26,8 @@ export const PluginPortfolio = () => {
         const result = mockUserInfo.filter(
           (user: TUserInfo) => user.address === inputAddress
         );
-        return result;
+        // return result;
+        return null;
       },
       'filter',
       'PluginPortfolio'
@@ -38,8 +41,8 @@ export const PluginPortfolio = () => {
   });
   return (
     <div className="border rounded-lg p-4 border-dividerColorDefault">
-      This is Plugin Portfolio
-      <Portfolio />
+      This is APT
+      <AnhTuan />
       {do_action('subtitle')}
     </div>
   );
