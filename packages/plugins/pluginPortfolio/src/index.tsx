@@ -12,7 +12,8 @@ export const PluginPortfolio = () => {
       'subtitle',
       () => {
         // return <div>Plugin contents 123</div>;
-        return <div>AI Pro Tarrot</div>;
+        // return <div>AI Pro Tarrot</div>;
+        return null
       },
       'action',
       'PluginPortfolio'

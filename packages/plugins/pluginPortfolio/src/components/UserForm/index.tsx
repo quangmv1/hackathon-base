@@ -49,7 +49,7 @@ const InfoFillBoard = ({ onNext }: Props) => {
           />
         </div>
       </div>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-3">
         <ConnectModal
           trigger={
             <Button className="w-1/4 border-spacing-4 " disabled={!name}>
@@ -82,7 +82,7 @@ export const ViewTarotCard = ({
       <div className="overflow-y-auto max-h-[calc(100vh_-_50px)] py-5">
         <div className="w-full max-w-screen-lg mx-auto gap-2">
           {nftList?.map(
-            (nft) =>
+            (nft : any) =>
               nft?.content?.fields?.url && (
                 <div
                   className="flex gap-2"
@@ -112,27 +112,33 @@ export const ViewTarotCard = ({
 };
 
 const DailyTarotCard = (props: Props) => {
+  const { data: nftList } = useFetchAccountNftTokens();
   return (
-    <>
+    <div className='mt-3'>
       <ConnectButton className="absolute top-0 " />
       <div className="w-full all-center absolute bottom-0 gap-5 p-5">
         <Button className="min-w-[200px] rounded-2xl " onClick={props.onNext}>
           {' '}
           Draw{' '}
         </Button>
-        <Button
-          className="min-w-[200px] rounded-2xl"
-          onClick={() => {
-            if (props.toggleViewCard) {
-              props.toggleViewCard();
-            }
-          }}
-        >
-          {' '}
-          Your Card{' '}
-        </Button>
+        {
+          nftList?.length > 0 && (
+            <Button
+              className="min-w-[200px] rounded-2xl"
+              onClick={() => {
+                if (props.toggleViewCard) {
+                  props.toggleViewCard();
+                }
+              }}
+            >
+            {' '}
+            Your Card{' '}
+            </Button>
+          )
+        }
+       
       </div>
-    </>
+    </div>
   );
 };
 
@@ -167,6 +173,7 @@ const UserForm = ({ onNext, toggleViewCard }: Props) => {
           />
         </div>
       </div>
+     
       {!currentAccount && <InfoFillBoard onNext={onNext} />}
 
       {currentAccount && (

@@ -22,3 +22,26 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
+
+.image-text{
+  position: absolute;
+  right: -40%;
+  top: 20%;
+}
+
+.img-rotate {
+  transform: rotate(-25deg);
+}
+
+.text-content{
+  position: absolute;
+  right: -40%;
+  top: 20%;
+  z-index: 10000;
+}
+
+.img-cover{
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(-25deg);
+}
