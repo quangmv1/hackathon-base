@@ -139,7 +139,7 @@ export const useFetchAccountNftTokens = () => {
 
       if (Array.isArray(json?.nfts)) {
         const promise = await Promise.all(
-          json.nfts.map(async (nft) => {
+          json.nfts.filter(nft => nft.type === '0x2801a62547b9eb7e617fb9de58877a7fff5a25c0aab59f03e179e3850b8d353e::testnet_nft::TarotNFT').map(async (nft) => {
             const raw = JSON.stringify({
               jsonrpc: '2.0',
               id: 1,
