@@ -101,39 +101,41 @@ export const ViewTarotCard = ({
           </div>
         )}
         <div className="w-full max-w-screen-lg mx-auto space-y-5">
-          {nftList?.map(
-            (nft: any) =>
-              nft?.content?.fields?.url && (
-                <div
-                  className="flex gap-5"
-                  key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}
-                >
-                  <div className="flex-shrink-0">
-                    <img
-                      src={nft.content.fields.url}
-                      alt="Image Of Parcels"
-                      width="150"
-                      height="150"
-                    />
-                    <div className="text-sm text-center py-2">
-                      {nft?.content?.fields?.name}
-                    </div>
-                  </div>
-                  <div className="flex justify-center text-lg pt-2">
-                    <div>
-                      <div className="text-yellow-500 mb-5">
-                        Date:{' '}
-                        {new Date(
-                          nft?.timestamp || Date.now()
-                        ).toLocaleString()}
+          {nftList
+            ?.sort((a, b) => (b?.timestamp || 0) - (a?.timestamp || 0))
+            ?.map(
+              (nft: any) =>
+                nft?.content?.fields?.url && (
+                  <div
+                    className="flex gap-5"
+                    key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}
+                  >
+                    <div className="flex-shrink-0">
+                      <img
+                        src={nft.content.fields.url}
+                        alt="Image Of Parcels"
+                        width="150"
+                        height="150"
+                      />
+                      <div className="text-sm text-center py-2">
+                        {nft?.content?.fields?.name}
                       </div>
+                    </div>
+                    <div className="flex justify-center text-lg pt-2">
+                      <div>
+                        <div className="text-yellow-500 mb-5">
+                          Date:{' '}
+                          {new Date(
+                            nft?.timestamp || Date.now()
+                          ).toLocaleString()}
+                        </div>
 
-                      <div>{nft?.content?.fields?.description}</div>
+                        <div>{nft?.content?.fields?.description}</div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )
-          )}
+                )
+            )}
         </div>
       </div>
     </div>
