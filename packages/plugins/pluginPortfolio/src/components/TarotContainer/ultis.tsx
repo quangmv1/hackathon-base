@@ -1,10 +1,10 @@
 import { TarotCard } from '../../assets/data';
 
-export const requestAI = async (data: TarotCard) => {
-  // formdata.append(
-  //   'text',
-  //   `Tôi tên là Phú . Tôi rút được lá bài ${data.name} và nó mang ý nghĩa Taking a leap of faith`
-  // );
+export const requestAI = async (
+  data: TarotCard,
+  userInfo?: { name: string; birthDate: Date }
+) => {
+  const { name, birthDate } = userInfo || {};
   const formdata = new FormData();
 
   const randomMeaning = Math.random() > 0.5 ? 'light' : 'shadow';
@@ -15,7 +15,7 @@ export const requestAI = async (data: TarotCard) => {
   formdata.append(
     'text',
     `
-     Tôi tên là Phú, giới tính Nam sinh năm 1997. 
+     Tôi tên là ${name || 'Phu'} , giới tính Nam sinh năm 1997. 
      Tôi rút được lá bài ${data.name} và nó mang ý nghĩa ${message}
      kèm theo các từ khoá như ${data.keywords.join(', ')}
      Hãy trả lời tôi bằng tiếng Việt và cho tôi kết luận về cuộc đời. Liệt kê ra cho tôi luôn.

@@ -6,6 +6,7 @@ import {
 } from '@mysten/dapp-kit';
 import { Button, Input } from '@repo/ui';
 import React, { useEffect, useState } from 'react';
+import { useAppContext } from '../../providers/app';
 import { useFetchAccountNftTokens } from '../ConnectWallet';
 import './style.css';
 
@@ -20,13 +21,26 @@ const InfoFillBoard = ({ onNext }: Props) => {
   const [birthDate, setBirthDate] = React.useState('');
   const autoStatus = useAutoConnectWallet();
   const currentAccount = useCurrentAccount();
-
+  const { updateUserInfo } = useAppContext();
   useEffect(() => {
-    if (currentAccount && name && autoStatus !== 'attempted') onNext();
+    if (currentAccount && name && autoStatus !== 'attempted') {
+      updateUserInfo?.({
+        name,
+        birthDate,
+      });
+      onNext();
+    }
   }, [currentAccount, name, autoStatus]);
 
+  useEffect(() => {
+    updateUserInfo?.({
+      name,
+      birthDate,
+    });
+  }, [birthDate, name]);
+
   return (
-    <>
+    <div className="px-10">
       <div className="grid grid-cols-2 gap-space-200 items-center text-[24px] mt-[40vh]">
         <div>
           <p className="mb-2 text-bold">Your Name</p>
@@ -49,7 +63,8 @@ const InfoFillBoard = ({ onNext }: Props) => {
           />
         </div>
       </div>
-      <div className="flex flex-col items-center mt-3">
+
+      <div className="flex flex-col items-center mt-5">
         <ConnectModal
           trigger={
             <Button className="w-1/4 border-spacing-4 " disabled={!name}>
@@ -61,7 +76,7 @@ const InfoFillBoard = ({ onNext }: Props) => {
           onOpenChange={(isOpen) => setOpen(isOpen)}
         />
       </div>
-    </>
+    </div>
   );
 };
 
@@ -70,7 +85,7 @@ export const ViewTarotCard = ({
 }: {
   toggleViewCard: () => void;
 }) => {
-  const { data: nftList } = useFetchAccountNftTokens();
+  const { data: nftList, isLoading } = useFetchAccountNftTokens();
 
   return (
     <div>
@@ -80,12 +95,17 @@ export const ViewTarotCard = ({
         </Button>
       </div>
       <div className="overflow-y-auto max-h-[calc(100vh_-_50px)] py-5">
-        <div className="w-full max-w-screen-lg mx-auto gap-2">
+        {isLoading && (
+          <div className="text-center pt-10">
+            <div>Loading...</div>
+          </div>
+        )}
+        <div className="w-full max-w-screen-lg mx-auto space-y-5">
           {nftList?.map(
-            (nft : any) =>
+            (nft: any) =>
               nft?.content?.fields?.url && (
                 <div
-                  className="flex gap-2"
+                  className="flex gap-5"
                   key={nft?.content?.fields?.id?.id ?? crypto.randomUUID()}
                 >
                   <div className="flex-shrink-0">
@@ -99,8 +119,17 @@ export const ViewTarotCard = ({
                       {nft?.content?.fields?.name}
                     </div>
                   </div>
-                  <div className="flex justify-center items-center text-lg">
-                    <div>{nft?.content?.fields?.description}</div>
+                  <div className="flex justify-center text-lg pt-2">
+                    <div>
+                      <div className="text-yellow-500 mb-5">
+                        Date:{' '}
+                        {new Date(
+                          nft?.timestamp || Date.now()
+                        ).toLocaleString()}
+                      </div>
+
+                      <div>{nft?.content?.fields?.description}</div>
+                    </div>
                   </div>
                 </div>
               )
@@ -114,28 +143,26 @@ export const ViewTarotCard = ({
 const DailyTarotCard = (props: Props) => {
   const { data: nftList } = useFetchAccountNftTokens();
   return (
-    <div className='mt-3'>
+    <div className="mt-3">
       <ConnectButton className="absolute top-0 " />
       <div className="w-full all-center absolute bottom-0 gap-5 p-5">
-        <Button className="min-w-[200px] rounded-2xl " onClick={props.onNext}>
+        <Button className="min-w-[200px] rounded-lg " onClick={props.onNext}>
           {' '}
           Draw{' '}
         </Button>
-        {
-          nftList?.length > 0 && (
-            <Button
-              className="min-w-[200px] rounded-2xl"
-              onClick={() => {
-                if (props.toggleViewCard) {
-                  props.toggleViewCard();
-                }
-              }}
-            >
+        {nftList?.length > 0 && (
+          <Button
+            className="min-w-[200px] rounded-lg"
+            onClick={() => {
+              if (props.toggleViewCard) {
+                props.toggleViewCard();
+              }
+            }}
+          >
             {' '}
             Your Card{' '}
-            </Button>
-          )
-        }
+          </Button>
+        )}
       </div>
     </div>
   );

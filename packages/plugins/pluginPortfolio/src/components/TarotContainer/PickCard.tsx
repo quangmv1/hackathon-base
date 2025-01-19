@@ -1,6 +1,7 @@
 import { cn } from '@repo/ui';
 import React, { useEffect, useRef, useState } from 'react';
 import { TarotCard, tarotData } from '../../assets/data';
+import { useAppContext } from '../../providers/app';
 import CardTarot from './CardTarot';
 import './style.css';
 import { requestAI } from './ultis';
@@ -11,6 +12,7 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
   const [listData] = useState(() =>
     tarotData.sort(() => (Math.random() > 0.5 ? 1 : -1))
   );
+  const { userInfo } = useAppContext();
   const [openIndex, setOpenIndex] = useState<number>();
   const [loadingIndex, setLoadingIndex] = useState<number>();
 
@@ -68,20 +70,20 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
       }
       const eleRef = boxRef.current[index] as HTMLDivElement;
       const eleContainerRef = containerRef.current;
-  
+
       if (eleRef && eleContainerRef) {
         const { x, y, height, width } = eleContainerRef.getBoundingClientRect();
-  
+
         const targetX = x + width / 2;
         const targetY = y + height / 2;
-  
+
         const {
           x: childX,
           y: childY,
           height: childHeight,
           width: childWidth,
         } = eleRef?.getBoundingClientRect();
-  
+
         const distanceX = childX + childWidth / 2;
         const distanceY = childY + childHeight / 2;
         eleRef.style.zIndex = '100';
@@ -92,18 +94,15 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
               `translate(${targetX - distanceX}px,${targetY - distanceY}px) scale(4)`,
             ],
             easing: ['cubic-bezier(.17,.67,.83,.67)'],
-            // offset: [0, 0.3, 0.7, 1],
           },
-          // timing options
           {
             delay: 0,
             duration: 1000,
             fill: 'forwards',
-            // duration: 1500,
           }
         );
-  
-        requestAI(data).then((resData) => {
+
+        requestAI(data, userInfo).then((resData) => {
           setOpenIndex(index);
           const animateFinished = eleRef.animate(
             {
@@ -126,14 +125,12 @@ const PickCard = ({ onComplete }: { onComplete: (data: any) => void }) => {
             });
           };
         });
-  
+
         animateItem.onfinish = () => {
           setLoadingIndex(index);
         };
       }
-    } catch (error) {
-      
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
