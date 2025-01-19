@@ -136,7 +136,6 @@ const DailyTarotCard = (props: Props) => {
             </Button>
           )
         }
-       
       </div>
     </div>
   );
@@ -173,7 +172,6 @@ const UserForm = ({ onNext, toggleViewCard }: Props) => {
           />
         </div>
       </div>
-     
       {!currentAccount && <InfoFillBoard onNext={onNext} />}
 
       {currentAccount && (

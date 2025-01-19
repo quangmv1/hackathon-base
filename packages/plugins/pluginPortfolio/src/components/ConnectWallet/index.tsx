@@ -70,6 +70,7 @@ export interface Data {
   display: Display;
   content: Content;
   bcs: Bcs;
+  timestamp?: number
 }
 
 export interface Bcs {
@@ -158,6 +159,12 @@ export const useFetchAccountNftTokens = () => {
               ],
             });
 
+            const fetchTime = await fetch(`https://suiscan.xyz/api/sui-backend/devnet/api/objects/${nft.objectId}/transactions?orderBy=DESC&size=20&objectSourceType=CHANGED_OBJECT`)
+            .then((response) => response.json())
+            .catch(() => null);
+              // .then((result) => result as ObjectNFT)
+
+            // console.log('🚀 ~ json.nfts.filter ~ fetchTime:', fetchTime)
             const arr = await fetch('https://suiscan.xyz/api/sui/devnet/', {
               method: 'POST',
               headers: myHeaders,
@@ -168,7 +175,7 @@ export const useFetchAccountNftTokens = () => {
               .then((result) => result as ObjectNFT)
               .catch(() => null);
 
-            return arr?.result?.data;
+            return {...arr?.result?.data, timestamp: fetchTime?.content?.[0]?.timestamp ?? 0};
           })
         );
 
